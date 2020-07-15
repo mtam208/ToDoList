@@ -1,0 +1,14 @@
+thead {
+    background-color: cyan;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+td:first-child {
+    width: 300px;
+}
+
+#newTaskName {
+    width: 300px;
+}
+

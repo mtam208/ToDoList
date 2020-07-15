@@ -1,13 +1,16 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-const bodyParser = require('body-parser')
-var jsonParser = bodyParser.json()
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+const router = require('./router')
 
 app.use('/public', express.static(path.join(__dirname, 'public')))
 
-app.listen(3000)
-app.get('/', (req, res, next) => {
-    res.sendFile('index.html')
+app.listen(3000,()=>{
+    console.log('Server started');
 })
+
+app.get('/', (req, res, next) => {
+    indexHtml = path.join(__dirname, 'index.html')
+    res.sendFile(indexHtml)
+})
+app.use('/api/tasks', router)

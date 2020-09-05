@@ -25,8 +25,6 @@ router.get('/dashboard', (req, res, next) => {
     })
 })
 
-
-
 router.get('/:id', (req, res, next) => {
     TaskModel.findById(req.params.id)
     .then(data => {
@@ -52,9 +50,10 @@ router.post('/', (req, res, next) => {
 })
 
 router.put('/:id', (req, res, next) => {
-    var newData = {}
+    let newData = {}
     if (req.body.taskName) newData.taskName = req.body.taskName
     if (req.body.deadLine) newData.deadLine = req.body.deadLine
+    newData.completed = req.body.completed
     TaskModel.updateOne({
         _id: req.params.id
     }, newData)

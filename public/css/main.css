@@ -1,19 +1,19 @@
 thead {
-    /* background-color: cyan; */
+    background-color: yellowgreen;
     font-size: 18px;
     font-weight: bold;
 }
 
-td:first-child {
-    width: 300px;
+td:nth-child(2) {
+    width: 400px;
 }
 
-td:nth-child(2) {
+td:nth-child(3) {
     width: 170px;
 }
 
 #newTaskName {
-    width: 400px;
+    min-width: 400px;
 }
 
 .taskName {
@@ -21,5 +21,11 @@ td:nth-child(2) {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 500px;
+}
+
+.checked {
+    font-style: italic;
+    color: red;
+    text-decoration: line-through
 }
 

@@ -8,6 +8,10 @@ const Schema = mongoose.Schema
 const taskSchema = new Schema({
     taskName: String,
     deadLine: Date,
+    completed: {
+      type: Boolean,
+      default: false
+    },
     user: String
 })
 

@@ -5,21 +5,24 @@ function LoadAllData(){
         type: 'GET'
     })
     .then(data => {
-        $('#content').html('')
+        $('#todoItem').html('')
         for (element of data) {
-            var tr = $(`
-                <tr id="${element._id}">
+            let completed = element.completed ? "checked" : ""
+            let tr = $(`
+                <tr class="${completed}" id="${element._id}">
+                    <td><input type='checkbox' class="isChecked" ${completed}></td> 
                     <td><span class="taskName">${element.taskName}</span></td> 
                     <td><span class="deadLine">${(element.deadLine).slice(0,10)}</span></td>
-                    <td><button type="button" class="btn btn-warning viewBtn">View</button></td>
+                    <td><button type="button" class="btn btn-info viewBtn">View</button></td>
                     <td><button type="button" class="btn btn-danger deleteBtn">Delete</button></td>
                 </tr>`)
-            $('#content').append(tr)
+            $('#todoItem').append(tr)
         }
         ViewDetail()
         EditTaskEvent()
         EditDeadLineEvent()
         DeleteEvent()    
+        CheckCompleted()
     })
     .catch(err => {
         console.log(err);
@@ -30,8 +33,8 @@ function LoadAllData(){
 // Add new Task
 
 $('#addBtn').click(() => {
-    var taskName = $('#newTaskName').val()
-    var deadLine = $('#newDeadLine').val()
+    let taskName = $('#newTaskName').val()
+    let deadLine = $('#newDeadLine').val()
     if (taskName == '' || deadLine == '') {
         alert('Missing task name or deadline')
         return
@@ -45,14 +48,15 @@ $('#addBtn').click(() => {
         }
     })
     .then(data => {
-        var newTr = $(`
+        let newTr = $(`
             <tr id="${data._id}">
+                <td><input type='checkbox' class="isChecked"></td> 
                 <td><span class="taskName">${data.taskName}</span></td>
                 <td><span class="deadLine">${(data.deadLine).slice(0,10)}</span></td>
-                <td><button type="button" class="btn btn-warning viewBtn">View</button></td>
+                <td><button type="button" class="btn btn-info viewBtn">View</button></td>
                 <td><button type="button" class="btn btn-danger deleteBtn">Delete</button></td>
             </tr>`)
-        $('#content').append(newTr)
+        $('#todoItem').append(newTr)
         $('#newTaskName').val('')
         $('#newDeadLine').val('')
 
@@ -60,6 +64,7 @@ $('#addBtn').click(() => {
         EditTaskEvent()
         EditDeadLineEvent()
         DeleteEvent()
+        CheckCompleted()
     })
     .catch(err => {
         console.log(err);
@@ -72,18 +77,18 @@ function EditTaskEvent(){
     $('.taskName').click(function() {
         oldText = $(this).text();
         $(this).hide()
-        var textInput = $(`<input type="text">`)
+        let textInput = $(`<input type="text">`)
         textInput.appendTo($(this).parent('td')).val(oldText)
         .select()
         .blur(function() {
-            var newText = $.trim(this.value)
+            let newText = $.trim(this.value)
             if (newText == '') {
                 $(this).prev().text(oldText)
             } else {
                 $(this).prev().text(newText)
             }    
             
-            trId = $(this).parents('tr').attr('id')
+            let trId = $(this).parents('tr').attr('id')
             $.ajax({
                 url: '/api/tasks/' + trId,
                 type: 'PUT',
@@ -107,13 +112,13 @@ function EditTaskEvent(){
 // Edit Deadline
 function EditDeadLineEvent(){
     $('.deadLine').click(function(){
-        oldDate = $(this).text()
+        let oldDate = $(this).text()
         // console.log(oldDate);
         $(this).hide()
-        var dateInput = $(`<input type="date">`)
+        let dateInput = $(`<input type="date">`)
         dateInput.appendTo($(this).parent('td'))
         .blur(function() {
-            var newDate = dateInput.val()
+            let newDate = dateInput.val()
             if (newDate == '') {
                 $(this).prev().text(oldDate)
                 newDate = oldDate
@@ -121,7 +126,7 @@ function EditDeadLineEvent(){
                 $(this).prev().text(newDate)
             }  
 
-            trId = $(this).parents('tr').attr('id')
+            let trId = $(this).parents('tr').attr('id')
             newDate = new Date(newDate)
             $.ajax({
                 url: '/api/tasks/' + trId,
@@ -147,7 +152,7 @@ function EditDeadLineEvent(){
 // Delete Task
 function DeleteEvent(){
     $('.deleteBtn').click(function() {
-        trId = $(this).parents('tr').attr('id')
+        let trId = $(this).parents('tr').attr('id')
         $.ajax({
             url: '/api/tasks/' + trId,
             type: 'DELETE'
@@ -165,14 +170,14 @@ function DeleteEvent(){
 // View Detail
 function ViewDetail(){
     $('.viewBtn').click(function() {
-        trId = $(this).parents('tr').attr('id')
+        let trId = $(this).parents('tr').attr('id')
         $.ajax({
             url: '/api/tasks/' + trId,
             type: 'GET'
         })
         .then(data => {
-            $('#taskDetail').html(data.taskName)
-            $('#dateDetail').html(data.deadLine)
+            $('#taskDetail').html("<b>Task: </b> " + data.taskName)
+            $('#dateDetail').html("<b>Deadline: </b> " + data.deadLine)
 
         })
         .catch(err => {
@@ -184,6 +189,33 @@ function ViewDetail(){
     })
 }
 
+// Logout
+$('#logoutBtn').click(function() {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.assign('/users/login')
+})
+
+// Check completed
+function CheckCompleted(){
+    $('.isChecked').click(function() {
+        let trId = $(this).parents('tr').attr('id')
+        let isChecked = $(this).is(':checked')
+        $.ajax({
+            url: '/api/tasks/' + trId,
+            type: 'PUT',
+            data: {
+                completed: isChecked
+            }
+        })
+        .then(data=>{
+            LoadAllData()
+        })
+        .catch(err => {
+            alert('Server error Check Completed')
+            console.log(err);
+        })
+    })
+}
 // Call Main function
 LoadAllData()
 

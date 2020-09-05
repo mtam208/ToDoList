@@ -10,20 +10,29 @@
 <body>
 
     <div class="container jumbotron w-50">
-        <h2 class="mb-3 mt-n5">Simple Todo App</h2>
-        <input type="text" value="" id="newTaskName" placeholder="What are you going to do?">
-        <input type="date" name="" id="newDeadLine">
-        <button type="button" id="addBtn" class="btn btn-primary">Add</button>
+      <div class="header mb-3 mt-n5 d-flex justify-content-between">
+        <h2>Simple Todo App</h2>
+        <button type="button" id="logoutBtn" class="btn btn-outline-primary">Logout</button>
+      </div>
+      <div class="addTodo">
+        <input type="text" id="newTaskName" placeholder="What are you going to do?">
+        <input type="date" id="newDeadLine">
+        <button type="button" id="addBtn" class="btn btn-primary">Add Task</button>
+      </div>
+      <div class="content mt-2 border-primary">
         <table class="table table-sm w-auto">
-            <thead>
-                <td>Task Name</td>
-                <td>Deadline</td>   
-                <td></td>
-            </thead>
-            <tbody id="content">
-            </tbody>
-        </table>
-        <p class="small"><i>(*) Click on task or deadline to edit</i></p>
+          <thead>
+              <td></td>
+              <td>Task Name</td>
+              <td>Deadline</td>   
+              <td></td>
+              <td></td>
+          </thead>
+          <tbody id="todoItem">
+          </tbody>
+      </table>
+      </div>
+      <p class="small"><i>(*) Click on task or deadline to edit</i></p>
 
         
           <!-- Modal -->
@@ -39,10 +48,12 @@
                 <div class="modal-body">
                   <p id="taskDetail"></p>
                   <p id="dateDetail"></p>
+                  <!-- <label for="description"><b>Description: </b></label>
+                  <textarea class="form-control" id="description" rows="2" cols="10" ></textarea> -->
                 </div>
                 <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-primary">Save</button> -->
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
               </div>
             </div>

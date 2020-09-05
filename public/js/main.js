@@ -1,7 +1,7 @@
-// =========== Function Declaration ====================
+// Load All Tasks
 function LoadAllData(){
     $.ajax({
-        url: '/api/tasks',
+        url: '/api/tasks/dashboard',
         type: 'GET'
     })
     .then(data => {
@@ -11,23 +11,63 @@ function LoadAllData(){
                 <tr id="${element._id}">
                     <td><span class="taskName">${element.taskName}</span></td> 
                     <td><span class="deadLine">${(element.deadLine).slice(0,10)}</span></td>
+                    <td><button type="button" class="btn btn-warning viewBtn">View</button></td>
                     <td><button type="button" class="btn btn-danger deleteBtn">Delete</button></td>
                 </tr>`)
             $('#content').append(tr)
         }
+        ViewDetail()
         EditTaskEvent()
         EditDeadLineEvent()
         DeleteEvent()    
-
-        
-        
     })
     .catch(err => {
         console.log(err);
-        alert('Server error')
+        alert('Server error LoadAllData')
     })
 }
 
+// Add new Task
+
+$('#addBtn').click(() => {
+    var taskName = $('#newTaskName').val()
+    var deadLine = $('#newDeadLine').val()
+    if (taskName == '' || deadLine == '') {
+        alert('Missing task name or deadline')
+        return
+    }
+    $.ajax({
+        url: '/api/tasks',
+        type: 'POST',
+        data: {
+            taskName: taskName,
+            deadLine: deadLine
+        }
+    })
+    .then(data => {
+        var newTr = $(`
+            <tr id="${data._id}">
+                <td><span class="taskName">${data.taskName}</span></td>
+                <td><span class="deadLine">${(data.deadLine).slice(0,10)}</span></td>
+                <td><button type="button" class="btn btn-warning viewBtn">View</button></td>
+                <td><button type="button" class="btn btn-danger deleteBtn">Delete</button></td>
+            </tr>`)
+        $('#content').append(newTr)
+        $('#newTaskName').val('')
+        $('#newDeadLine').val('')
+
+        ViewDetail()
+        EditTaskEvent()
+        EditDeadLineEvent()
+        DeleteEvent()
+    })
+    .catch(err => {
+        console.log(err);
+        alert('Server error Add new Task')
+    })
+})
+
+// Edit Task
 function EditTaskEvent(){
     $('.taskName').click(function() {
         oldText = $(this).text();
@@ -55,7 +95,7 @@ function EditTaskEvent(){
                 console.log('Update Task: Success');
             })
             .catch(err => {
-                alert('Server error')
+                alert('Server error Edit Task')
                 console.log(err);
             })
             $(this).prev().show()
@@ -64,10 +104,11 @@ function EditTaskEvent(){
     })
 }
 
+// Edit Deadline
 function EditDeadLineEvent(){
     $('.deadLine').click(function(){
         oldDate = $(this).text()
-        console.log(oldDate);
+        // console.log(oldDate);
         $(this).hide()
         var dateInput = $(`<input type="date">`)
         dateInput.appendTo($(this).parent('td'))
@@ -93,7 +134,7 @@ function EditDeadLineEvent(){
                 console.log('Update Date: Success');
             })
             .catch(err => {
-                alert('Server error')
+                alert('Server error Edit Deadline')
                 console.log(err);
             })
 
@@ -102,6 +143,8 @@ function EditDeadLineEvent(){
         })
     })
 }
+
+// Delete Task
 function DeleteEvent(){
     $('.deleteBtn').click(function() {
         trId = $(this).parents('tr').attr('id')
@@ -113,48 +156,38 @@ function DeleteEvent(){
             $('#'+trId).remove()
         })
         .catch(err => {
-            alert('Server error')
+            alert('Server error Delete Task')
             console.log(err);
         })
     })
 }
 
-// =============== MAIN ========================
+// View Detail
+function ViewDetail(){
+    $('.viewBtn').click(function() {
+        trId = $(this).parents('tr').attr('id')
+        $.ajax({
+            url: '/api/tasks/' + trId,
+            type: 'GET'
+        })
+        .then(data => {
+            $('#taskDetail').html(data.taskName)
+            $('#dateDetail').html(data.deadLine)
+
+        })
+        .catch(err => {
+            alert('Server error View Detail')
+            console.log(err);
+        })
+        $('#myModal').modal()
+
+    })
+}
+
+// Call Main function
 LoadAllData()
 
-$('#addBtn').click(() => {
-    var taskName = $('#newTaskName').val()
-    var deadLine = $('#newDeadLine').val()
-    if (taskName == '' || deadLine == '') {
-        alert('Missing task name or deadline')
-        return
-    }
-    $.ajax({
-        url: '/api/tasks',
-        type: 'POST',
-        data: {
-            taskName: taskName,
-            deadLine: deadLine
-        }
-    })
-    .then(data => {
-        var newTr = $(`
-            <tr id="${data._id}">
-                <td><span class="taskName">${data.taskName}</span></td>
-                <td><span class="deadLine">${(data.deadLine).slice(0,10)}</span></td>
-                <td><button type="button" class="btn btn-danger deleteBtn">Delete</button></td>
-            </tr>`)
-        $('#content').append(newTr)
 
-        EditTaskEvent()
-        EditDeadLineEvent()
-        DeleteEvent()
-    })
-    .catch(err => {
-        console.log(err);
-        alert('Server error')
-    })
-})
 
 
 

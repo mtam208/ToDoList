@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Todo App</title>
+    <link rel="stylesheet" href="../public/css/loginPage.css">
+    <!-- <script src="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></script> -->
+
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="" method="POST">
+            <p>Username:</p>
+            <input type="text" name="username" >
+            <p>Password:</p>
+            <input type="password" name="password" autocomplete="off">
+            <p class="right-align">
+                <span>Create an account?</span>
+                <a href="/users/signup">Sign Up</a>
+            </p>
+            <button type="submit">Login</button>
+        </form>
+        <h3>Or</h3>
+        <button type="button" onclick="document.location='https://facebook.com/login'" class="fb-button"><i class="fab fa-facebook"></i> Login With Facebook</button>
+    </div>
+    
+</body>
+</html>

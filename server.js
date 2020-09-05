@@ -1,16 +1,38 @@
-const express = require('express')
-const app = express()
-const path = require('path')
-const router = require('./router')
+const express = require('express');
+const app = express();
+const path = require('path');
+const taskRouter = require('./routers/taskRouter');
+const userRouter = require('./routers/userRouter');
 
-app.use('/public', express.static(path.join(__dirname, 'public')))
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser');
 
-app.listen(3000,()=>{
-    console.log('Server started');
-})
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(cookieParser());
 
-app.get('/', (req, res, next) => {
-    indexHtml = path.join(__dirname, 'index.html')
-    res.sendFile(indexHtml)
-})
-app.use('/api/tasks', router)
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+app.listen(3000, () => {
+  console.log('Server started');
+});
+
+app.set('view engine', 'ejs')
+
+const tokenValidation = (req, res, next) => {
+  try {
+      let token = req.cookies.token;
+      let payload = jwt.verify(token, 'secret');
+      if (payload) {
+        res.locals.userID = payload
+        next()
+      }
+  } catch (error) {
+      res.redirect('/users/login');
+  }
+}
+
+app.use('/api/tasks', tokenValidation, taskRouter);
+app.use('/users', userRouter);

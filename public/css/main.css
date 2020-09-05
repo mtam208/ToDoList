@@ -1,5 +1,5 @@
 thead {
-    background-color: cyan;
+    /* background-color: cyan; */
     font-size: 18px;
     font-weight: bold;
 }
@@ -13,7 +13,13 @@ td:nth-child(2) {
 }
 
 #newTaskName {
-    width: 300px;
+    width: 400px;
 }
 
+.taskName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+}
 

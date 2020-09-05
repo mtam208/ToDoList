@@ -33,6 +33,9 @@ const tokenValidation = (req, res, next) => {
       res.redirect('/users/login');
   }
 }
+app.get('/', (req, res, next)=>{
+  res.redirect('/api/tasks')
+})
 
 app.use('/api/tasks', tokenValidation, taskRouter);
 app.use('/users', userRouter);
